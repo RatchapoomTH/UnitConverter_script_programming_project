@@ -39,3 +39,5 @@
  2. ผู้ใช้เลือกตัวเลือกที่ต้องการ
  3. ผู้ใช้ป้อนค่าที่ต้องการจะแปลง
  4. Enter -> ได้ค่าที่แปลงเรียบร้อยแล้ว
+
+ **Link Colab**: https://colab.research.google.com/drive/1a3Id4OlTYzM_6vdejvpiIVCpb431GEyT?usp=sharing
