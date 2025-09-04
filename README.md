@@ -1,2 +1,4 @@
-# UnitConverter_script_programming_project
-I hope no one gonna see this!
+# Unit Converter 
+Unit Converter เป็นโปรแกรมรันบน Google Colab เพื่อใช้ในการเปลี่ยนหน่วยต่างๆที่ต้องการ โดยจะประกอบไปด้วย หน่วยของอุณหภูมิ หน่วยของน้ำหนัก หน่วยของเวลา และหน่วยของความยาว
+
+โปรเจกต์นี้เป็นงาน Mini Project ของรายวิชา CP352301 Script Programming ภาคเรียนที่ 1 ปีการศึกษา 2568
