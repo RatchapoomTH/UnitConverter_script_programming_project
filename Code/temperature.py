@@ -15,3 +15,4 @@ def celsius_to_kelvin(c: float):
 def kelvin_to_celsius(k: float):
     c = k - 273.15
     return c, f"{k:.2f} K = {c:.2f} °C"
+    
