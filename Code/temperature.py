@@ -1,11 +1,11 @@
-# temperature.py
-%%writefile converter2/temperature.py
+#temperature.py
+%%writefile converter3/temperature.py
 def fahrenheit_to_celsius(fr: float):
-    c = (fr - 32) * 5 / 9
+    c = (fr - 32) * 5.0 / 9.0
     return c, f"{fr:.2f} °F = {c:.2f} °C"
 
 def celsius_to_fahrenheit(c: float):
-    f = (c * 9 / 5) + 32
+    f = (c * 9.0 / 5.0) + 32.0
     return f, f"{c:.2f} °C = {f:.2f} °F"
 
 def celsius_to_kelvin(c: float):
@@ -15,4 +15,3 @@ def celsius_to_kelvin(c: float):
 def kelvin_to_celsius(k: float):
     c = k - 273.15
     return c, f"{k:.2f} K = {c:.2f} °C"
-    
