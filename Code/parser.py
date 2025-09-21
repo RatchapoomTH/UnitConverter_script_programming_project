@@ -1,88 +1,71 @@
-#parser.py
-%%writefile converter2/parser.py
+#parser
+%%writefile converter3/parser.py
 import re
-from . import temperature, weight, time, length, volume
+from converter3.temperature import *
+from converter3.weight import *
+from converter3.time_converter import *
+from converter3.length import *
+from converter3.volume import *
 
 def parse_input(user_input: str):
-    pattern = r"^\s*(-?\d+(\.\d+)?)\s*([a-zA-Z]+)\s*$"
-    match = re.match(pattern, user_input.strip())
+    user_input = user_input.strip().lower()
+    match = re.match(r"([-+]?[0-9]*\.?[0-9]+)\s*([a-z]+)", user_input)
     if not match:
-        return None, None, None, None, "❌ Invalid format. Example: 20C, 5kg, 10m"
+        return None, None, None, "❌ Invalid format. Example: 20C, 5kg, 10m"
 
-    value = float(match.group(1))
-    unit = match.group(3).lower()
-
-    # Allow negative only for temperature
-    temperature_units = ["c", "°c", "celsius", "f", "°f", "fahrenheit", "k", "kelvin"]
-    if value < 0 and unit not in temperature_units:
-        return None, None, None, None, "❌ [⚖️]Weight, [📏]Length, [⌚]Time & [🧪]Volume cannot be negative."
+    value, unit = match.groups()
+    value = float(value)
 
     # Temperature
-    if unit in ["c", "°c", "celsius"]:
-        f, msg1 = temperature.celsius_to_fahrenheit(value)
-        k, msg2 = temperature.celsius_to_kelvin(value)
-        return value, "temperature", "C", "F/K", f"Input: {value} °C\n→ {msg1}\n→ {msg2}"
-    if unit in ["f", "°f", "fahrenheit"]:
-        c, msg1 = temperature.fahrenheit_to_celsius(value)
-        k, msg2 = temperature.celsius_to_kelvin(c)
-        return value, "temperature", "F", "C/K", f"Input: {value} °F\n→ {msg1}\n→ {msg2}"
-    if unit in ["k", "kelvin"]:
-        c, msg1 = temperature.kelvin_to_celsius(value)
-        f, msg2 = temperature.celsius_to_fahrenheit(c)
-        return value, "temperature", "K", "C/F", f"Input: {value} K\n→ {msg1}\n→ {msg2}"
+    if unit in ["c", "°c"]:
+        return "temperature", "c", value, ""
+    if unit in ["f", "°f"]:
+        return "temperature", "f", value, ""
+    if unit in ["k"]:
+        return "temperature", "k", value, ""
 
     # Weight
-    if unit in ["kg", "kilogram"]:
-        lb, msg = weight.kilogram_to_pound(value)
-        return value, "weight", "kg", "lb", msg
-    if unit in ["lb", "pound"]:
-        kg, msg = weight.pound_to_kilogram(value)
-        return value, "weight", "lb", "kg", msg
-
-    # Length
-    if unit in ["m", "meter", "meters"]:
-        km, msg1 = length.meter_to_kilometer(value)
-        cm, msg2 = length.meter_to_centimeter(value)
-        return value, "length", "m", "km/cm", f"Input: {value} m\n→ {msg1}\n→ {msg2}"
-    if unit in ["km", "kilometer"]:
-        m, msg = length.kilometer_to_meter(value)
-        return value, "length", "km", "m", msg
-    if unit in ["cm", "centimeter"]:
-        m, msg = length.centimeter_to_meter(value)
-        return value, "length", "cm", "m", msg
+    if unit in ["kg"]:
+        if value < 0: return "weight", unit, value, "❌ Weight cannot be negative."
+        return "weight", "kg", value, ""
+    if unit in ["lb"]:
+        if value < 0: return "weight", unit, value, "❌ Weight cannot be negative."
+        return "weight", "lb", value, ""
 
     # Time
-    if unit in ["hr", "hour", "hours"]:
-        mins, msg = time.hours_to_minutes(value)
-        return value, "time", "hr", "min", msg
-    if unit in ["min", "mins", "minute", "minutes"]:
-        hr, msg1 = time.minutes_to_hours(value)
-        sec, msg2 = time.minutes_to_seconds(value)
-        return value, "time", "min", "hr/sec", f"Input: {value} min\n→ {msg1}\n→ {msg2}"
-    if unit in ["sec", "second", "seconds"]:
-        mins, msg = time.seconds_to_minutes(value)
-        return value, "time", "sec", "min", msg
+    if unit in ["hr", "h"]:
+        if value < 0: return "time", unit, value, "❌ Time cannot be negative."
+        return "time", "hr", value, ""
+    if unit in ["min"]:
+        if value < 0: return "time", unit, value, "❌ Time cannot be negative."
+        return "time", "min", value, ""
+    if unit in ["sec", "s"]:
+        if value < 0: return "time", unit, value, "❌ Time cannot be negative."
+        return "time", "sec", value, ""
+
+    # Length
+    if unit in ["m"]:
+        if value < 0: return "length", unit, value, "❌ Length cannot be negative."
+        return "length", "m", value, ""
+    if unit in ["km"]:
+        if value < 0: return "length", unit, value, "❌ Length cannot be negative."
+        return "length", "km", value, ""
+    if unit in ["cm"]:
+        if value < 0: return "length", unit, value, "❌ Length cannot be negative."
+        return "length", "cm", value, ""
 
     # Volume
-    if unit in ["l", "liter", "liters"]:
-        ml, msg1 = volume.liter_to_milliliter(value)
-        tbsp, msg2 = volume.liter_to_tbsp(value)
-        tsp, msg3 = volume.liter_to_tsp(value)
-        return value, "volume", "L", "mL/Tbsp/Tsp", f"Input: {value} L\n→ {msg1}\n→ {msg2}\n→ {msg3}"
-    if unit in ["ml", "milliliter", "milliliters"]:
-        l, msg1 = volume.milliliter_to_liter(value)
-        tbsp, msg2 = volume.milliliter_to_tbsp(value)
-        tsp, msg3 = volume.milliliter_to_tsp(value)
-        return value, "volume", "mL", "L/Tbsp/Tsp", f"Input: {value} mL\n→ {msg1}\n→ {msg2}\n→ {msg3}"
-    if unit in ["tbsp", "tablespoon"]:
-        l, msg1 = volume.tbsp_to_liter(value)
-        ml, msg2 = volume.tbsp_to_milliliter(value)
-        tsp, msg3 = volume.tbsp_to_tsp(value)
-        return value, "volume", "Tbsp", "L/mL/Tsp", f"Input: {value} Tbsp\n→ {msg1}\n→ {msg2}\n→ {msg3}"
-    if unit in ["tsp", "teaspoon"]:
-        l, msg1 = volume.tsp_to_liter(value)
-        ml, msg2 = volume.tsp_to_milliliter(value)
-        tbsp, msg3 = volume.tsp_to_tbsp(value)
-        return value, "volume", "Tsp", "L/mL/Tbsp", f"Input: {value} Tsp\n→ {msg1}\n→ {msg2}\n→ {msg3}"
+    if unit in ["l"]:
+        if value < 0: return "volume", unit, value, "❌ Volume cannot be negative."
+        return "volume", "l", value, ""
+    if unit in ["ml"]:
+        if value < 0: return "volume", unit, value, "❌ Volume cannot be negative."
+        return "volume", "ml", value, ""
+    if unit in ["tbsp"]:
+        if value < 0: return "volume", unit, value, "❌ Volume cannot be negative."
+        return "volume", "tbsp", value, ""
+    if unit in ["tsp"]:
+        if value < 0: return "volume", unit, value, "❌ Volume cannot be negative."
+        return "volume", "tsp", value, ""
 
-    return None, None, None, None, "❌ Unsupported unit. Try: C, F, K, kg, lb, m, km, cm, hr, min, sec, L, mL, Tbsp, Tsp"
+    return None, None, None, "❌ Unknown unit."
