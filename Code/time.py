@@ -1,25 +1,17 @@
-# time.py
-%%writefile converter2/time.py
-def hours_to_minutes(hr: float):
-    if hr < 0:
-        return None, "❌ Time cannot be negative."
-    minutes = hr * 60
-    return minutes, f"{hr:.4f} hr = {minutes:.4f} min"
+#time_converter.py
+%%writefile converter3/time_converter.py
+def hr_to_min(hr: float):
+    m = hr * 60
+    return m, f"{hr:.4f} hr = {m:.4f} min"
 
-def minutes_to_hours(minutes: float):
-    if minutes < 0:
-        return None, "❌ Time cannot be negative."
-    hr = minutes / 60
-    return hr, f"{minutes:.4f} min = {hr:.4f} hr"
+def min_to_hr(m: float):
+    hr = m / 60
+    return hr, f"{m:.4f} min = {hr:.4f} hr"
 
-def minutes_to_seconds(minutes: float):
-    if minutes < 0:
-        return None, "❌ Time cannot be negative."
-    sec = minutes * 60
-    return sec, f"{minutes:.4f} min = {sec:.4f} sec"
+def min_to_sec(m: float):
+    s = m * 60
+    return s, f"{m:.4f} min = {s:.4f} sec"
 
-def seconds_to_minutes(sec: float):
-    if sec < 0:
-        return None, "❌ Time cannot be negative."
-    minutes = sec / 60
-    return minutes, f"{sec:.4f} sec = {minutes:.4f} min"
+def sec_to_min(s: float):
+    m = s / 60
+    return m, f"{s:.4f} sec = {m:.4f} min"
